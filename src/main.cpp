@@ -8,6 +8,8 @@
 
 //https://www.drive2.ru/c/486832413771563406/
 
+//https://www.drive2.ru/b/508723415402676325/
+
 
 #include <SPI.h>
 
@@ -86,7 +88,7 @@ void loop() {
     }
     SERIAL_PORT_MONITOR.println(prbuf);
 
-    unsigned d = random(50);
+    unsigned d = 2000;//random(50);
     SERIAL_PORT_MONITOR.println(d);
     delay(d);
 }
