@@ -12,84 +12,36 @@
 
 
 #include <SPI.h>
-
 #define CAN_2515
 
+// For Arduino MCP2515 Hat:
+// the cs pin of the version after v1.1 is default to D9
+// v0.9b and v1.0 is default D10
 const int SPI_CS_PIN = 10;
 const int CAN_INT_PIN = 2;
 
+#ifdef CAN_2515
 #include "mcp2515_can.h"
 mcp2515_can CAN(SPI_CS_PIN); // Set CS pin
-#define MAX_DATA_SIZE 8
-
+#endif
 
 void setup() {
     SERIAL_PORT_MONITOR.begin(9600);
-    while (!SERIAL_PORT_MONITOR) {}
-    while (CAN_OK != CAN.begin(CAN_500KBPS)) {             // init can bus : baudrate = 500k
+    while(!Serial){};
+
+    while (CAN_OK != CAN.begin(CAN_500KBPS,MCP_8MHz)) {             // init can bus : baudrate = 500k
         SERIAL_PORT_MONITOR.println("CAN init fail, retry...");
         delay(100);
     }
     SERIAL_PORT_MONITOR.println("CAN init ok!");
-
-    randomSeed(millis());
 }
 
-uint32_t id;
-uint8_t  type; // bit0: ext, bit1: rtr
-unsigned len;
-byte cdata[MAX_DATA_SIZE] = {0};
-
+unsigned char stmp[8] = {1, 2, 3, 9, 8, 7, 5, 5};
 void loop() {
-    type = random(4);
-    if (type & 0x1) {
-        // total 29 bits
-        // Arduino AVR only generate up to 16 bits random number
-        id = random(0x1U << 14);
-        id |= (uint32_t)random(0x1U << 15) << 14;
-    } else {
-        id = random(0x1U << 11);
-    }
-    if (type & 0x2) {
-        len = 0;
-        // remote frame could also carry data
-        // but don't do it.
-        // len = random(0, MAX_DATA_SIZE + 1);
-    } else {
-        len = random(0, MAX_DATA_SIZE + 1);
-    }
-
-    int i;
-    for (i = 0; i < len; i++) {
-        cdata[i] = random(0x100);
-    }
-
-    CAN.sendMsgBuf(id, bool(type & 0x1),
-                       bool(type & 0x2),
-                       len,
-                       cdata);
-
-    char prbuf[32 + MAX_DATA_SIZE * 3];
-    int n;
-
-    /* Displayed type:
-     *
-     * 0x00: standard data frame
-     * 0x02: extended data frame
-     * 0x30: standard remote frame
-     * 0x32: extended remote frame
-     */
-    static const byte type2[] = {0x00, 0x02, 0x30, 0x32};
-    n = sprintf(prbuf, "TX: [%08lX](%02X) ", (unsigned long)id, type2[type]);
-    // n = sprintf(prbuf, "TX: [%08lX](%02X) ", id, type);
-
-    for (i = 0; i < len; i++) {
-        n += sprintf(prbuf + n, "%02X ", cdata[i]);
-    }
-    SERIAL_PORT_MONITOR.println(prbuf);
-
-    unsigned d = 2000;//random(50);
-    SERIAL_PORT_MONITOR.println(d);
-    delay(d);
+    // send data:  id = 0xDF, standrad frame, data len = 8, stmp: data buf
+ 
+    CAN.sendMsgBuf(0xDF, 0, 8, stmp);
+    delay(2000);                       // send data per 2000ms
+    SERIAL_PORT_MONITOR.println("CAN BUS sendMsgBuf ok!");
+    SERIAL_PORT_MONITOR.println(stmp[7]);
 }
-// END FILE
