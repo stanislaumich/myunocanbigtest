@@ -9,6 +9,9 @@
 //https://www.drive2.ru/c/486832413771563406/
 
 //https://www.drive2.ru/b/508723415402676325/
+// https://habr.com/ru/post/442184/
+// http://arduino.ru/forum/apparatnye-voprosy/arduino-uno-i-mcp2515-can?page=13
+// https://it4it.club/topic/38-arduino-v-avtomobile/
 
 
 #include <SPI.h>
