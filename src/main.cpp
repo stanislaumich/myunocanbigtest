@@ -13,6 +13,7 @@
 // http://arduino.ru/forum/apparatnye-voprosy/arduino-uno-i-mcp2515-can?page=13
 // https://it4it.club/topic/38-arduino-v-avtomobile/
 
+//https://en.wikipedia.org/wiki/OBD-II_PIDs#Mode_01
 
 #include <SPI.h>
 #define CAN_2515
