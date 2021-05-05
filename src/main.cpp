@@ -28,7 +28,7 @@ void setup()
 {
   Serial.begin(9600);
 
-  // Initialize MCP2515 running at 16MHz with a baudrate of 500kb/s and the masks and filters disabled.
+  // Initialize MCP2515 running at 8MHz with a baudrate of 500kb/s and the masks and filters disabled.
   if(CAN0.begin(MCP_ANY, CAN_500KBPS, MCP_8MHZ) == CAN_OK) Serial.println("MCP2515 Initialized Successfully!");
   else Serial.println("Error Initializing MCP2515...");
 
@@ -47,46 +47,9 @@ void loop()
   } else {
     Serial.println("Error Sending Message...");
   }
-  delay(2000);   // send data per 100ms
+  delay(2000);   // send data per 2000ms
 }
 
 /*********************************************************************************************************
   END FILE
 *********************************************************************************************************/ 
-/*
-#include <SPI.h>
-#define CAN_2515
-
-// For Arduino MCP2515 Hat:
-// the cs pin of the version after v1.1 is default to D9
-// v0.9b and v1.0 is default D10
-const int SPI_CS_PIN = 10;
-const int CAN_INT_PIN = 2;
-
-#ifdef CAN_2515
-#include "mcp2515_can.h"
-mcp2515_can CAN(SPI_CS_PIN); // Set CS pin
-#endif
-
-void setup() {
-    SERIAL_PORT_MONITOR.begin(9600);
-    while(!Serial){};
-
-    while (CAN_OK != CAN.begin(CAN_500KBPS,MCP_8MHz)) {             // init can bus : baudrate = 500k
-        SERIAL_PORT_MONITOR.println("CAN init fail, retry...");
-        delay(100);
-    }
-    //enOneShotTX();
-    SERIAL_PORT_MONITOR.println("CAN init ok!");
-}
-
-unsigned char stmp[8] = {1, 2, 3, 9, 8, 7, 5, 5};
-void loop() {
-    // send data:  id = 0xDF, standrad frame, data len = 8, stmp: data buf
- 
-    CAN.sendMsgBuf(0xDF, 0, 8, stmp);
-//false   1
-    delay(2000);                       // send data per 2000ms
-    SERIAL_PORT_MONITOR.println("CAN BUS sendMsgBuf ok!");
-    SERIAL_PORT_MONITOR.println(stmp[7]);
-}*/
